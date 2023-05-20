@@ -31,30 +31,24 @@ func dumpFull(c *Connection, basePath string) error {
 	cmd := exec.Command("/usr/local/bin/pg_dumpall", cmdStr...)
 	cmd.Env = append(cmd.Env, "PGPASSWORD="+c.password)
 
-	for _, service := range c.dbs {
-		for db, values := range service.(map[string]interface{}) {
-			fmt.Println("zzzz"+c.serviceName, "aaaa"+db, "bbb"+values.(string))
-			// outFile, err := os.Create(basePath + "/" + c.serviceName + "/" + c.dbName + ".sql")
-			// if err != nil {
-			// 	return err
-			// }
-			// defer outFile.Close()
+	for dbName, attr := range c.dbs {
+		for db, values := range attr.(map[string]interface{}) {
+			fmt.Println(db, values)
+			outFile, err := os.Create(basePath + "/" + c.serviceName + "/" + dbName + ".sql")
+			if err != nil {
+				return err
+			}
+			defer outFile.Close()
 
-			// errFile, err := os.Create(basePath + "/" + c.serviceName + "/" + c.dbName + ".log")
-			// if err != nil {
-			// 	return err
-			// }
-			// defer errFile.Close()
+			cmd.Stdout = outFile
+			cmd.Stderr = os.Stdout
 
-			// cmd.Stdout = outFile
-			// cmd.Stderr = errFile
+			err = cmd.Run()
 
-			// err = cmd.Run()
-
-			// if err != nil {
-			// 	return err
-			// }
-			// return nil
+			if err != nil {
+				return err
+			}
+			return nil
 		}
 	}
 
