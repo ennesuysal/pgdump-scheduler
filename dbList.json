@@ -1,0 +1,20 @@
+{
+   "Web": {
+        "host": "127.0.0.1",
+        "port": "5432",
+        "username": "postgres4",
+        "password": "mysecretpassword4",
+        "dbs": {
+            "webDB": {"table": "* 0 * * *", "full": "* 1 * * * "}
+        }
+    },
+    "Web2": {
+        "host": "127.0.0.2",
+        "port": "5432",
+        "username": "postgres5",
+        "password": "mysecretpassword5",
+        "dbs": {
+            "webDB": {"table": "* 5 * * *", "full": "* 2 * * * "}
+        }
+    }
+}
