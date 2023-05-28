@@ -5,16 +5,18 @@
         "username": "postgres",
         "password": "mysecretpassword",
         "dbs": {
-            "webDB": {"table": "* 0 * * *", "full": "* 1 * * * "}
+            "webDB": {"table": "0 */1 * * * *", "full": "0 */2 * * * *"},
+            "webDB22": {"table": "0 */1 * * * *", "full": "0 */2 * * * *"}
         }
     },
     "Web2": {
         "host": "127.0.0.1",
         "port": "5432",
-        "username": "postgres4",
+        "username": "postgres",
         "password": "mysecretpassword",
         "dbs": {
-            "webDB": {"table": "* 5 * * *", "full": "* 2 * * * "}
+            "webDB": {"table": "0 */1 * * * *", "full": "0 */2 * * * *"},
+            "webDB2": {"table": "0 */1 * * * *", "full": "0 */2 * * * *"}
         }
     }
 }
