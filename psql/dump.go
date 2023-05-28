@@ -1,9 +1,10 @@
 package psql
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
+
+	"github.com/robfig/cron"
 )
 
 type Connection struct {
@@ -26,44 +27,45 @@ func NewConnection(host string, port string, username string, password string, s
 	}
 }
 
-func dumpFull(c *Connection, basePath string) error {
+func dumpFull(c *Connection, dbName string, basePath string) error {
 	cmdStr := []string{"-h", c.host, "-p", c.port, "-U", c.username}
 	cmd := exec.Command("/usr/local/bin/pg_dumpall", cmdStr...)
 	cmd.Env = append(cmd.Env, "PGPASSWORD="+c.password)
 
-	for dbName, attr := range c.dbs {
-		for db, values := range attr.(map[string]interface{}) {
-			fmt.Println(db, values)
-			outFile, err := os.Create(basePath + "/" + c.serviceName + "/" + dbName + ".sql")
-			if err != nil {
-				return err
-			}
-			defer outFile.Close()
+	outFile, err := os.Create(basePath + "/" + c.serviceName + "/" + dbName + ".sql")
+	if err != nil {
+		return err
+	}
+	defer outFile.Close()
 
-			cmd.Stdout = outFile
-			cmd.Stderr = os.Stdout
+	cmd.Stdout = outFile
+	cmd.Stderr = os.Stdout
 
-			err = cmd.Run()
+	err = cmd.Run()
 
-			if err != nil {
-				return err
-			}
-			return nil
-		}
+	if err != nil {
+		return err
 	}
 
 	return nil
-
 }
 
 func DumpAllHosts(dbs map[string]map[string]interface{}, basePath string) error {
-
+	c := cron.New()
 	for service, db := range dbs {
 		err := os.MkdirAll(basePath+"/"+service, os.ModePerm)
 		if err != nil {
 			return err
 		}
-		dumpFull(NewConnection(db["host"].(string), db["port"].(string), db["username"].(string), db["password"].(string), service, db["dbs"].(map[string]interface{})), basePath)
+		conn := NewConnection(db["host"].(string), db["port"].(string), db["username"].(string), db["password"].(string), service, db["dbs"].(map[string]interface{}))
+		for dbName, attr := range conn.dbs {
+			for _, cron := range attr.(map[string]interface{}) {
+				c.AddFunc(cron.(string), func() {
+					dumpFull(conn, dbName, basePath)
+				})
+			}
+		}
 	}
+	c.Start()
 	return nil
 }
