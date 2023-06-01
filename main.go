@@ -6,8 +6,10 @@ import (
 )
 
 func main() {
-	// c := pg.NewConnection("127.0.0.1", "5432", "postgres", "mysecretpassword")
-	// pg.DumpAll(c, "test.txt")
-	p, _ := parser.Parse()
+	p, err := parser.Parse()
+	if err != nil {
+		panic(err)
+	}
+
 	psql.DumpAllHosts(p, ".")
 }

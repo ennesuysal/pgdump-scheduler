@@ -5,8 +5,8 @@
         "username": "postgres",
         "password": "mysecretpassword",
         "dbs": {
-            "webDB": {"table": "0 */1 * * * *", "full": "0 */2 * * * *"},
-            "webDB22": {"table": "0 */1 * * * *", "full": "0 */2 * * * *"}
+            "deneme": {"table": {"table-name": "test", "cron": "0 */1 * * * *"}, "full": {"cron": "0 */2 * * * *"}},
+            "deneme2": {"table": {"table-name": "test", "cron": "0 */1 * * * *"}, "full": {"cron": "0 */2 * * * *"}}
         }
     },
     "Web2": {
@@ -15,8 +15,8 @@
         "username": "postgres",
         "password": "mysecretpassword",
         "dbs": {
-            "webDB": {"table": "0 */1 * * * *", "full": "0 */2 * * * *"},
-            "webDB2": {"table": "0 */1 * * * *", "full": "0 */2 * * * *"}
+            "deneme3": {"table": {"table-name": "test", "cron": "0 */1 * * * *"}, "full":{"cron": "0 */2 * * * *"}},
+            "deneme4": {"table": {"table-name": "test", "cron": "0 */1 * * * *"}, "full": {"cron": "0 */2 * * * *"}}
         }
     }
 }
